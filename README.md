@@ -1,54 +1,62 @@
 # Stefan | AI Agent Security
 
-![AI agent security — pixel-art sakura banner](assets/ai-agent-security-sakura-banner.png)
+<p align="center">
+  <img src="assets/ai-agent-security-cyberpunk-cat.png" width="440" alt="Pixel-art cyberpunk cat operating AI agents in a neon city">
+</p>
 
-I research the security of **AI agents, MCP integrations, and the systems behind their tools**: who can trigger an action, what data it can reach, and whether the intended boundary is actually enforced.
+I investigate **AI agents, MCP integrations, and the systems behind their tools**: identity, permissions, shared state, and resource lifecycles.
 
-I started in **Web3 security**, reviewing bridge architecture, cross-chain authentication, token accounting, and security invariants. I am now actively focused on **AI Agent Security**, applying the same flow-by-flow approach to agent permissions, authorization, sessions, and shared state.
-
-My work combines source-level analysis, AI-assisted research, and controlled local testing. Below are the investigations, evidence, and technical explanations behind my portfolio.
+My background is in **Web3 security**, including bridge architecture, cross-chain authorization, token accounting, and security invariants. My current focus is **AI Agent Security**, using architecture mapping, source review, AI-assisted tooling, and controlled local testing.
 
 ## Selected investigations
 
-### Browser Use — navigation and trust boundaries
+### Browser Use — navigation policy and trust boundaries
 
-[Repository and report](https://github.com/Keedz1Off/browser-use-agent-security-case-study) · [Architecture](https://github.com/Keedz1Off/browser-use-agent-security-case-study/blob/main/FLOW.md) · [Results](https://github.com/Keedz1Off/browser-use-agent-security-case-study/blob/main/CASE-STUDY.md)
+[Case study](https://github.com/Keedz1Off/browser-use-agent-security-case-study) · [Architecture](https://github.com/Keedz1Off/browser-use-agent-security-case-study/blob/main/FLOW.md) · [Evidence](https://github.com/Keedz1Off/browser-use-agent-security-case-study/blob/main/CASE-STUDY.md)
 
-Mapped the task → model → tool → event bus → browser flow. In a direct-tool local check, the receiver recorded an HTTP request even though the navigation tool returned a domain-policy error. I documented the enforcement mismatch, examined the relevant source path, and separated it from unrelated answer-format failures.
+Traced the task → model → tool → event bus → browser flow. In a direct-tool local check, the navigation tool returned a domain-policy error while the owned receiver still recorded the selected HTTP request.
 
-**Result:** an evidenced navigation-guard defect. An untrusted-input attack chain and exploitable security impact were not established.
+**Outcome:** documented a navigation-guard enforcement mismatch and its source path. Attacker reachability and exploitable security impact remain unconfirmed.
 
-### FastMCP — authorization, OAuth state, and SSE
+### FastMCP / MCP Python SDK — authorization, OAuth state, and SSE
 
-[Repository and report](https://github.com/Keedz1Off/fastmcp-auth-state-sse-case-study) · [Architecture](https://github.com/Keedz1Off/fastmcp-auth-state-sse-case-study/blob/main/FLOW.md) · [Results](https://github.com/Keedz1Off/fastmcp-auth-state-sse-case-study/blob/main/RESULTS.md)
+[Case study](https://github.com/Keedz1Off/fastmcp-auth-state-sse-case-study) · [Architecture](https://github.com/Keedz1Off/fastmcp-auth-state-sse-case-study/blob/main/FLOW.md) · [Upstream fix verification](https://github.com/modelcontextprotocol/python-sdk/pull/3278#issuecomment-6401226641)
 
-Reviewed authentication, OAuth token lifecycle, shared storage, session behavior, and transport failures. In the owned SSE stand, the server correctly rejected a revoked test credential, but the waiting client RPC did not promptly surface that rejection. Explicit deadlines bounded the wait; independent work continued during the control test.
+Reviewed authentication, OAuth token lifecycle, shared storage, sessions, and transport failures. Independently reproduced a known MCP SDK SSE bug through FastMCP: the server rejected a revoked credential, but the client continued waiting.
 
-**Result:** an evidenced client/dependency error-propagation defect, with additional shared-state and deployment observations. The evidence does not establish an authorization bypass or application-wide DoS.
+**Outcome:** verified the proposed upstream fix against its exact base and head, with release 2.3.0 as a control, across nine local cases. The tested PR head surfaced the error promptly and allowed a subsequent call on the same connection after reauthorization of the same client. This is verification of a known reliability fix; no authorization bypass or application-wide DoS was established.
+
+### LangGraph application — SQLite resource lifecycle
+
+[Case study and local patch](https://github.com/Keedz1Off/learn-with-genai-resource-lifecycle-case-study) · [Upstream bug report](https://github.com/vandenn/learn-with-genai/issues/19)
+
+Investigated **Learn with GenAI**, an application built on LangGraph. Traced the HTTP stream → workflow → SQLite checkpoint saver flow. Ordinary chat requests completed while their SQLite connections and worker threads remained alive.
+
+**Outcome:** reported an application resource-lifecycle bug and prepared a local cleanup patch. The same nine regression tests went from **1 pass / 8 failures before the patch to 9 passes afterward**, covering completion, errors, cancellation, iterator cleanup, and checkpoint resume. The defect belongs to the application; a LangGraph library vulnerability or exploitable service outage was not established. The patch has not been merged upstream.
 
 ### AI Agent Security Lab
 
 [Repository](https://github.com/Keedz1Off/ai-agent-security-lab)
 
-A defensive Python lab covering tool permissions, document-level access, HTML text encoding, and action limits. Includes deterministic tests and seeded randomized policy checks, alongside OWASP-mapped learning examples. Uses synthetic data without a live LLM or external services.
+A defensive Python lab covering tool permissions, document-level access, HTML text encoding, and action limits. Includes deterministic tests and seeded randomized policy checks with synthetic data.
 
-## Current research focus
+## Research focus
 
-- Agent-to-tool trust boundaries and application-enforced permissions.
+- Agent-to-tool trust boundaries and application permissions.
 - MCP authentication, authorization, and session lifecycle.
-- Untrusted content and prompt-injection risks at tool boundaries.
-- OAuth token storage, concurrency, timeouts, and cancellation.
-- Invariant-based testing and evidence-backed result classification.
+- Memory isolation and untrusted content at retrieval and tool boundaries.
+- OAuth token storage, concurrency, timeouts, cancellation, and cleanup.
+- Invariant-based testing and clear classification of observed failures.
 
 ## How I work
 
-I trace the architecture and data flow, identify trust boundaries, define invariants, inspect their enforcement in code, and compare expected behavior with local evidence. Reports retain version pins, controls, observed results, and the remaining questions about impact.
+Map the architecture → identify boundaries → define invariants → inspect enforcement → test locally → check controls → report evidence and limits.
 
-I use AI to assist research and testing, while keeping claims tied to source and measurements. These are independent, scoped portfolio studies—not vendor-endorsed production audits. A reproducible bug is not automatically a security vulnerability.
+I use AI throughout research and testing and disclose that assistance in upstream contributions. Each case records the assessed versions, configuration, observations, and remaining proof gaps. I distinguish library defects, application bugs, configuration risks, and confirmed security impact.
 
 ## Web3 background
 
-Earlier work focused on cross-chain message flows, bridge authorization, and token-accounting invariants:
+Earlier work examined cross-chain message flows, bridge authorization, and token-accounting invariants:
 
 - [Arbitrum Bridge](https://github.com/Keedz1Off/arbitrum-bridge-flow-local-review)
 - [Optimism Bridge](https://github.com/Keedz1Off/optimism-bridge-flow-local-review)
@@ -57,8 +65,6 @@ Earlier work focused on cross-chain message flows, bridge authorization, and tok
 
 ## Work with me
 
-Open to **junior AI security roles, internships, and research collaboration**, especially with teams building agents, MCP services, and tool-enabled applications.
+Open to **junior AI security roles, internships, and research collaboration** with teams building agents, MCP services, and tool-enabled applications.
 
-- GitHub: [Keedz1Off](https://github.com/Keedz1Off)
-- Telegram: [@ETHkeedz1](https://t.me/ETHkeedz1)
-- Email: [keedzyone@gmail.com](mailto:keedzyone@gmail.com)
+[GitHub](https://github.com/Keedz1Off) · [Telegram](https://t.me/ETHkeedz1) · [Email](mailto:keedzyone@gmail.com)
