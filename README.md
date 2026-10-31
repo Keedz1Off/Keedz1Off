@@ -15,6 +15,8 @@ My current focus is **AI Agent Security and AppSec**: understanding how applicat
 
 My portfolio includes local investigations of **Browser Use**, **FastMCP / MCP Python SDK**, and a **LangGraph-based application**. The work covers navigation-policy enforcement, error propagation after token revocation, and SQLite resource lifecycle, including reproductions, upstream fix verification, and a local cleanup patch with regression tests.
 
+I participated in **ETHOnline 2026** with **Voxel Bench**. The project publicly credits me for **SR-01**, a recipe-authorship vulnerability identified through AI-assisted contract review and local tests. The team implemented an attester-based fix and retained the regression evidence.
+
 ## Method & automation
 
 **Map the architecture → define boundary invariants → design controls and negative scenarios → test locally → inspect evidence → verify fixes.**
