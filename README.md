@@ -1,4 +1,4 @@
-# Stefan | AI Agent & Application Security
+# Keedz1 | AI Agent & Application Security
 
 I investigate security boundaries in **AI agents, MCP integrations, and tool-enabled applications**. My background is in **Web3 security**, including smart contracts, cross-chain authorization, bridge flows, and token-accounting invariants.
 
