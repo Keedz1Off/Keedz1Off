@@ -18,6 +18,7 @@ I use AI for code analysis, test development and automation. Reports distinguish
 
 ## AI Agent Security
 
+- [LangGraph testing pipeline](https://github.com/Keedz1Off/langgraph-pipeline-case-study) — how a local integration test goes from a security invariant to a pytest result, with a 22-property matrix and recorded outcomes.
 - [Browser Use](https://github.com/Keedz1Off/browser-use-agent-security-case-study): navigation-policy behavior; security impact remains unconfirmed.
 - [FastMCP / MCP SDK](https://github.com/Keedz1Off/fastmcp-auth-state-sse-case-study): SSE error propagation and local verification of a proposed upstream fix.
 - [Learn with GenAI](https://github.com/Keedz1Off/learn-with-genai-resource-lifecycle-case-study): application resource-cleanup bug, local patch and regression tests.
