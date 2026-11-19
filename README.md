@@ -14,7 +14,7 @@ I use AI for code analysis, test development and automation. Reports distinguish
 ## AppSec
 
 - [FastAPI mutation benchmark](https://github.com/Keedz1Off/fastapi-appsec-mutation-benchmark): an independent static auditor identified all five deliberately introduced defects. Attack scenarios were not validated over HTTP.
-- **AppSec boundary workflow** — a defensive FastAPI lab that turns an authorization matrix into pytest checks for note ownership, request validation, and token revocation. The runner also checks one Semgrep rule and saves Markdown, JSON, and JUnit reports. **14 tests passed locally.** A GitHub Actions workflow is configured and awaits its first hosted run.
+- [AppSec boundary workflow](https://github.com/Keedz1Off/AboutMe#appsec-boundary-workflow) covers FastAPI route bindings, ownership, input validation and token revocation. **14 tests passed on GitHub Actions.** The workflow saves evidence from pytest and Semgrep and can package it on manual runs.
 
 ## AI Agent Security
 
