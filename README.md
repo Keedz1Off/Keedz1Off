@@ -1,4 +1,4 @@
-# Keedz1 | AI Agent & DevSecOps
+# Keedz1 | AI Agent Security & DevSecOps
 
 I review security boundaries in AI agents, MCP integrations and tool-enabled applications. My background is in Web3 security: smart contracts, bridge flows and accounting invariants.
 
